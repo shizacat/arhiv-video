@@ -66,10 +66,11 @@ class Application(tk.Frame):
 
     def __init__(self):
         self.p_convert = None
+        self.is_quit = False
 
         self.root = tk.Tk()
         self.root.title("Архив видео работ")
-        self.root.geometry("420x150")
+        self.root.geometry("420x200")
         self.root.resizable(False, False)
 
         super().__init__(self.root)
@@ -80,6 +81,9 @@ class Application(tk.Frame):
         self.create_widgets()
 
     def create_widgets(self):
+        self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
+
+        # ---
         btSelectFolder = tk.Button(
             master=self.root,
             text="Browse",
@@ -120,10 +124,15 @@ class Application(tk.Frame):
         ErLb.grid(row=3, column=0, sticky=tk.W)
 
         self.ErText = tk.Text(
-            width=45, height=3,
+            width=45, height=6,
             fg='black', wrap=tk.WORD
         )
         self.ErText.grid(row=4)
+
+    def on_closing(self):
+        self.is_quit = True
+        self.bt_stop()
+        self.root.destroy()
 
     def bt_browse(self):
         name = filedialog.askdirectory()
@@ -145,22 +154,39 @@ class Application(tk.Frame):
 
     def _ch_stop(self):
         """Изменить состояние"""
+        if self.is_quit:
+            return
         self.btStart.configure(state=tk.ACTIVE)
         self.btStop.configure(state=tk.DISABLED)
 
     def _write_log(self, msg):
         """Пишет в лог"""
+        if self.is_quit:
+            return
         self.ErText.insert(1.0, msg)
+        self.ErText.insert(1.0, "\n")
 
     def process(self):
-        files = get_files(self.path.get())
-        # Bar
-
         is_error = False
         description = ""
-        self.ErText.insert(1.0, "")
 
-        for file in files:
+        self.ErText.delete('1.0', tk.END)
+
+        try:
+            files = get_files(self.path.get())
+        except FileNotFoundError as e:
+            self._write_log("Указана не директория")
+            self._ch_stop()
+            return
+
+        self._write_log("Найдено {} файлов".format(len(files)))
+
+        # Bar
+
+        for i, file in enumerate(files):
+            self._write_log(
+                "Началась обртака {}/{}: {}".format(i, len(files), file)
+            )
             file_out = get_out_file(file, ".mp4")
             self.p_convert = convert_mts_to_mp4(file, file_out)
             self.p_convert.wait()
@@ -171,8 +197,9 @@ class Application(tk.Frame):
                 break
 
         if is_error:
-            self.ErText.insert(
-                1.0, "Произошла ошибка:\n{}".format(description))
+            self._write_log(
+                "Произошла ошибка:\n{}".format(description)
+            )
         else:
             self.ErText.insert(1.0, "Завершено успешно")
 
