@@ -11,7 +11,7 @@ from multiprocessing import Process
 from threading import Thread
 
 import tkinter as tk
-from tkinter import filedialog
+from tkinter import filedialog, ttk
 
 
 # ---/ Lib
@@ -87,7 +87,8 @@ class Application(tk.Frame):
         btSelectFolder = tk.Button(
             master=self.root,
             text="Browse",
-            command=self.bt_browse
+            command=self.bt_browse,
+            width=10
         )
 
         lbPath = tk.Entry(
@@ -106,7 +107,8 @@ class Application(tk.Frame):
         self.btStart = tk.Button(
             master=self.root,
             text="Начать",
-            command=self.bt_start
+            command=self.bt_start,
+            width=10
         )
         self.btStart.grid(row=1, column=1, sticky=tk.E)
 
@@ -115,7 +117,8 @@ class Application(tk.Frame):
             master=self.root,
             text="Остановить",
             command=self.bt_stop,
-            state=tk.DISABLED
+            state=tk.DISABLED,
+            width=10
         )
         self.btStop.grid(row=2, column=1, sticky=tk.E)
 
