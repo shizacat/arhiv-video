@@ -5,6 +5,7 @@ https://trac.ffmpeg.org/wiki/Encode/H.264
 """
 
 import os
+import sys
 import signal
 import subprocess
 from multiprocessing import Process
@@ -34,12 +35,22 @@ def get_files(root_path: str) -> list:
     return result
 
 
+def get_path_ffmpeg():
+    bpath = "c:\\ffmpeg\\bin\\"
+    if sys.platform == "win32":
+        name = "ffmpeg.exe"
+        return "{}{}".format(bpath, name)
+    else:
+        name = "ffmpeg"
+        return name
+
+
 def convert_mts_to_mp4(fin, fout):
     p = subprocess.Popen([
-        'ffmpeg', '-i', str(fin),
+        get_path_ffmpeg(), '-i', str(fin),
         '-acodec', 'aac',
-        # '-ab', '160k',
-        # '-ac', '2',
+        '-ab', '320k',
+        '-ac', '2',
         '-vcodec', 'libx264',
         # '-strict', '-2',
         # '-vpre', 'ipod640',
@@ -70,7 +81,7 @@ class Application(tk.Frame):
 
         self.root = tk.Tk()
         self.root.title("Архив видео работ")
-        self.root.geometry("420x200")
+        self.root.geometry("460x200")
         self.root.resizable(False, False)
 
         super().__init__(self.root)
