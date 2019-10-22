@@ -52,12 +52,13 @@ def convert_mts_to_mp4(fin, fout):
         '-ab', '320k',
         '-ac', '2',
         '-vcodec', 'libx264',
+        '-crf', '23',
         # '-strict', '-2',
         # '-vpre', 'ipod640',
         # '-threads', '8',
         # '-s', '1280x720',
-        '-b:v', '2000k',
-        '-pass', '1',
+        # '-b:v', '2000k',
+        # '-pass', '1',
         '-y',
         fout
     ])
@@ -199,7 +200,7 @@ class Application(tk.Frame):
 
         for i, file in enumerate(files):
             self._write_log(
-                "Началась обртака {}/{}: {}".format(i, len(files), file)
+                "Началась обработка {}/{}: {}".format(i + 1, len(files), file)
             )
             file_out = get_out_file(file, ".mp4")
             self.p_convert = convert_mts_to_mp4(file, file_out)
