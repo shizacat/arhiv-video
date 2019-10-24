@@ -29,7 +29,7 @@ def get_files(root_path: str) -> list:
             if not entry.is_file():
                 continue
             _, ext = os.path.splitext(entry.name)
-            if ext not in ext_filter:
+            if ext.lower() not in ext_filter:
                 continue
             result.append(entry.path)
     return result
