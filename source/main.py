@@ -46,22 +46,26 @@ def get_path_ffmpeg():
 
 
 def convert_mts_to_mp4(fin, fout):
-    p = subprocess.Popen([
-        get_path_ffmpeg(), '-i', str(fin),
-        '-acodec', 'aac',
-        '-ab', '320k',
-        '-ac', '2',
-        '-vcodec', 'libx264',
-        '-crf', '23',
-        # '-strict', '-2',
-        # '-vpre', 'ipod640',
-        # '-threads', '8',
-        # '-s', '1280x720',
-        # '-b:v', '2000k',
-        # '-pass', '1',
-        '-y',
-        fout
-    ])
+    p = subprocess.Popen(
+        [
+            get_path_ffmpeg(), '-i', str(fin),
+            '-acodec', 'aac',
+            '-ab', '320k',
+            '-ac', '2',
+            '-vcodec', 'libx264',
+            '-crf', '23',
+            # '-strict', '-2',
+            # '-vpre', 'ipod640',
+            # '-threads', '8',
+            # '-s', '1280x720',
+            # '-b:v', '2000k',
+            # '-pass', '1',
+            '-y',
+            fout
+        ],
+        shell=True, stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE, stdin=subprocess.PIPE, close_fds=close_fds
+    )
     return p
 
 
